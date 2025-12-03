@@ -1,0 +1,36 @@
+create database InventoryManagement;
+use InventoryManagement;
+
+create table products (
+	productID int primary key not null auto_increment,
+    productName varchar(100),
+    quantity int 
+);
+
+create table inventoryChanges (
+	changeID int primary key not null auto_increment,
+    productID int not null,
+    oldQuantity int,
+    newQuantity int,
+    changeDate datetime,
+    foreign key (productID) references products (productID)
+);
+
+INSERT INTO products (productName, quantity) VALUES
+('Chuột không dây Logitech', 50),
+('Bàn phím cơ AKKO 3098', 35),
+('Tai nghe gaming HyperX', 20),
+('Màn hình Samsung 27 inch', 15),
+('Laptop Dell Inspiron', 10);
+
+alter table products
+add column lastUpdate datetime;
+
+DELIMITER $$
+ create trigger AfterProductUpdateSetDate
+ before update on products
+ for each row
+ begin
+	set NEW.lastUpdate = now();
+end $$
+DELIMITER ;
